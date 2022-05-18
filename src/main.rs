@@ -3,16 +3,20 @@ use std::io::{Write, stdout, stdin};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
+use ncurses::*;
 
 fn main() {
-    let stdin = stdin();
-    let mut stdout = stdout().into_raw_mode().unwrap();
-    print!("{}{}", termion::clear::All, termion::cursor::Goto(1, 1));
+    initscr();
+    addstr("Hello!");
+    refresh();
 
-    for c in stdin.keys() {
-        match c.unwrap() {
-            Key::Char('q') => break,
-            _ => {}
+    let mut quit = false;
+    while !quit {
+        let key = getch();
+        match key as u8 as char {
+           'q' => quit = true,
+            _=> {}
         }
     }
+    endwin();
 }
